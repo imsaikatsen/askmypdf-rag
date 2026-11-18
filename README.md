@@ -1,6 +1,6 @@
 # AskMyPDF: RAG from Scratch
 
-AskMyPDF is a small PDF question-answering app built as Day 14 of my AI Engineering journey. It extracts PDF text, splits it into overlapping chunks, creates local sentence embeddings, retrieves relevant passages, and asks Gemini to answer with citations back to those passages. The Express server serves the browser app and the upload, search, and document-management API.
+AskMyPDF is a small PDF question-answering app built of my AI Engineering journey. It extracts PDF text, splits it into overlapping chunks, creates local sentence embeddings, retrieves relevant passages, and asks Gemini to answer with citations back to those passages. The Express server serves the browser app and the upload, search, and document-management API.
 
 ## Run locally
 
@@ -19,9 +19,7 @@ The first embedding run may download the model files. Scanned PDFs need OCR befo
 
 ## Screenshot
 
-<!-- Replace this placeholder with a screenshot of the running app. -->
-
-![AskMyPDF UI screenshot placeholder](docs/askmypdf-screenshot.png)
+![AskMyPDF screenshot](docs/askmypdf.png)
 
 ## RAG pipeline
 
