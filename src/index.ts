@@ -1,35 +1,41 @@
+import "dotenv/config";
 import fs from "node:fs";
 import { extractPages } from "./pdf.js";
 import { chunkPages } from "./chunk.js";
 import { embed } from "./embed.js";
 import { addChunks, hasFile, search } from "./store.js";
+import { answer } from "./llm.js";
 
 const FILE = "sample.pdf";
+const MIN_SCORE = 0.3; // এর নিচের chunk অপ্রাসঙ্গিক ধরে বাদ
 
-// --- Indexing: ---
-if (hasFile(FILE)) {
-  console.log("Already indexed, skipping embedding.\n");
-} else {
+// --- Indexing: একবারই ---
+if (!hasFile(FILE)) {
   const pages = await extractPages(fs.readFileSync(`samples/${FILE}`));
-  const chunks = chunkPages(pages, 300, 50); // ছোট PDF, তাই ছোট chunk
+  const chunks = chunkPages(pages, 300, 50);
   const vectors = await embed(chunks.map((c) => c.text));
   addChunks(chunks.map((c, i) => ({ ...c, file: FILE, vector: vectors[i] })));
-  console.log(`Indexed ${chunks.length} chunks.\n`);
 }
 
-// --- Retrieval: ---
-const questions = [
-  "Which universities accept GRE score 290-300?",
-  "how to bake a chocolate cake",
-];
+// --- প্রশ্ন-উত্তর ---
+async function ask(question: string) {
+  console.log(`\n❓ ${question}`);
 
-for (const q of questions) {
-  const [qVec] = await embed([q]);
-  const hits = search(qVec, 3);
+  const [qVec] = await embed([question]);
+  const hits = search(qVec, 3).filter((h) => h.score >= MIN_SCORE);
 
-  console.log(`❓ ${q}`);
-  hits.forEach((h) => {
-    console.log(`  score ${h.score.toFixed(3)} | page ${h.page} | ${h.text.slice(0, 80)}...`);
-  });
-  console.log();
+  if (hits.length === 0) {
+    console.log("💬 No relevant information found in this document. (LLM was not called)");
+    return;
+  }
+
+  const text = await answer(question, hits);
+  console.log(`💬 ${text}`);
+  console.log("\n📚 Sources:");
+  hits.forEach((h, i) =>
+    console.log(`  [${i + 1}] page ${h.page} (score ${h.score.toFixed(2)}): ${h.text.slice(0, 70)}...`)
+  );
 }
+
+await ask("Which universities accept GRE score 290-300?");
+await ask("Which university has the best football team?");
