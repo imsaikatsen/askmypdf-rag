@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f6f7fb" />
+    <title>AskMyPDF — RAG from Scratch</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="Documents">
+        <div class="sidebar-top">
+          <a class="brand-mark" href="/" aria-label="AskMyPDF home"
+            >A<span>·</span></a
+          ><button
+            class="icon-button mobile-close"
+            id="closeSidebar"
+            aria-label="Close documents panel"
+          >
+            ×
+          </button>
+        </div>
+        <div class="side-heading">
+          <div>
+            <p class="eyebrow">YOUR LIBRARY</p>
+            <h2>Documents <span id="docCount" class="count-pill">0</span></h2>
+          </div>
+          <button
+            class="icon-button add-button"
+            id="browseButton"
+            aria-label="Upload a PDF"
+          >
+            +
+          </button>
+        </div>
+        <div
+          class="dropzone"
+          id="dropzone"
+          tabindex="0"
+          role="button"
+          aria-label="Choose or drop a PDF to upload"
+        >
+          <div class="upload-icon" aria-hidden="true">↑</div>
+          <strong id="uploadTitle">Add a PDF</strong
+          ><span id="uploadHint">Drop it here or <u>browse files</u></span>
+          <div class="upload-progress" id="uploadProgress" hidden>
+            <span class="spinner"></span><span>Reading and indexing…</span>
+          </div>
+          <input
+            id="fileInput"
+            type="file"
+            accept="application/pdf,.pdf"
+            hidden
+          />
+        </div>
+        <div class="library-label">
+          <span>INDEXED FILES</span><span id="libraryMeta">0 files</span>
+        </div>
+        <ul class="document-list" id="documentList" aria-live="polite"></ul>
+        <div class="sidebar-footer">
+          <span class="status-dot"></span><span>Private workspace</span
+          ><span class="footer-sparkle">✳</span>
+        </div>
+      </aside>
+      <main class="main-panel">
+        <header class="topbar">
+          <button
+            class="icon-button mobile-menu"
+            id="openSidebar"
+            aria-label="Open documents panel"
+          >
+            ☰
+          </button>
+          <div class="header-title">
+            <div class="brand-word">
+              AskMyPDF <span class="beta-tag">RAG STUDIO</span>
+            </div>
+            <p>
+              RAG from Scratch <span class="header-dot">·</span>
+              AI Engineering journey
+            </p>
+          </div>
+          <div class="header-actions">
+            <label class="search-select-label" for="docSelect">Search in</label
+            ><select id="docSelect" aria-label="Choose documents to search">
+              <option value="">All documents</option></select
+            ><button
+              class="icon-button theme-toggle"
+              id="themeToggle"
+              aria-label="Toggle color theme"
+              title="Toggle theme"
+            >
+              <span id="themeIcon">☾</span>
+            </button>
+          </div>
+        </header>
+        <section class="chat-scroll" id="chatScroll" aria-live="polite">
+          <div class="welcome" id="welcome">
+            <div class="welcome-orb"><span>✳</span></div>
+            <p class="eyebrow">YOUR PDF RESEARCH ASSISTANT</p>
+            <h1>Answers are in<br /><span>your documents.</span></h1>
+            <p class="welcome-copy">
+              Upload a PDF and ask anything. Every answer comes with page
+              references, so you can check the source for yourself.
+            </p>
+            <div class="welcome-hint">
+              <span class="hint-icon">↗</span
+              ><span
+                ><strong>Start by adding a document</strong><br />Your files
+                stay in this local workspace.</span
+              >
+            </div>
+            <div class="example-section">
+              <span class="example-label">TRY ASKING</span>
+              <div class="example-chips">
+                <button class="question-chip">
+                  What are the main takeaways?</button
+                ><button class="question-chip">Summarize this document</button
+                ><button class="question-chip">
+                  What details should I know?
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="conversation" id="conversation"></div>
+        </section>
+        <footer class="composer-wrap">
+          <form class="composer" id="askForm">
+            <label class="sr-only" for="questionInput"
+              >Ask a question about your PDFs</label
+            ><textarea
+              id="questionInput"
+              rows="1"
+              placeholder="Ask anything about your documents…"
+              disabled
+            ></textarea>
+            <div class="composer-bottom">
+              <span class="composer-tip"
+                ><kbd>↵</kbd> to send <span>·</span> <kbd>⇧ ↵</kbd> for a new
+                line</span
+              ><button
+                class="send-button"
+                id="sendButton"
+                type="submit"
+                disabled
+              >
+                <span>Ask</span><span aria-hidden="true">↑</span>
+              </button>
+            </div>
+          </form>
+          <p class="disclaimer">
+            AI can make mistakes. Check the cited passages in your sources.
+          </p>
+        </footer>
+      </main>
+    </div>
+    <div
+      class="toast-region"
+      id="toastRegion"
+      role="status"
+      aria-live="polite"
+    ></div>
+    <div class="sidebar-scrim" id="sidebarScrim"></div>
+  </body>
+</html>
